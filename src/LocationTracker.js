@@ -42,8 +42,7 @@ const geo_trigger = () => {
       updateLocation,
       handleError,
       {
-        enableHighAccuracy: true, // Lấy vị trí chính xác hơn
-        timeout: 1000, // Thời gian chờ tối đa 5 giây
+        timeout: 100, // Thời gian chờ tối đa 5 giây
         maximumAge: 0, // Không dùng cache
       }
     );
@@ -101,6 +100,8 @@ function LocationTracker() {
     } catch (error) {
 
     }
+
+
     const location = await locationManager.requestLocation();
     setLatitude(location.latitude);
     setLongitude(location.longitude);
