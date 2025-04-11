@@ -22,34 +22,34 @@ const detectDevice = () => {
   return 'Other';
 };
 
-const geo_trigger = () => {
-  if (navigator.geolocation) {
-    // Biến để lưu watchId
-    let watchId;
+// const geo_trigger = () => {
+//   if (navigator.geolocation) {
+//     // Biến để lưu watchId
+//     let watchId;
 
-    // Hàm cập nhật tọa độ
-    const updateLocation = (position) => {
-      const { latitude, longitude, accuracy } = position.coords;
-    };
+//     // Hàm cập nhật tọa độ
+//     const updateLocation = (position) => {
+//       const { latitude, longitude, accuracy } = position.coords;
+//     };
 
-    // Hàm xử lý lỗi
-    const handleError = (error) => {
-      console.log(error)
-    };
+//     // Hàm xử lý lỗi
+//     const handleError = (error) => {
+//       console.log(error)
+//     };
 
-    // Cấu hình watchPosition
-    // watchId = navigator.geolocation.watchPosition(
-    //   updateLocation,
-    //   handleError,
-    //   {
-    //     timeout: 100, // Thời gian chờ tối đa 5 giây
-    //     maximumAge: 0, // Không dùng cache
-    //   }
-    // );
+//     // Cấu hình watchPosition
+//     watchId = navigator.geolocation.watchPosition(
+//       updateLocation,
+//       handleError,
+//       {
+//         timeout: 100, // Thời gian chờ tối đa 5 giây
+//         maximumAge: 0, // Không dùng cache
+//       }
+//     );
 
-    // Để đảm bảo cập nhật liên tục, không cần setInterval vì watchPosition tự động gọi lại khi có thay đổi
-  }
-}
+//     // Để đảm bảo cập nhật liên tục, không cần setInterval vì watchPosition tự động gọi lại khi có thay đổi
+//   }
+// }
 
 
 function LocationTracker() {
@@ -66,15 +66,29 @@ function LocationTracker() {
   }, [])
 
   useEffect(() => {
-    // Tạo interval để log "xxx" mỗi giây
-    const intervalId = setInterval(() => {
-      const device = detectDevice()
-      if (device == 'Android') {
-        // alert(device)
-        geo_trigger()
-      }
-    }, 1000);
-    return () => clearInterval(intervalId);
+    // Theo dõi tọa độ liên tục
+    if (navigator.geolocation && detectDevice() == 'Android') {
+      const watchId = navigator.geolocation.watchPosition(
+        // (position) => {
+        //   const { latitude, longitude, accuracy } = position.coords;
+        // },
+        (err) => {
+          console.log(err.message);
+        },
+        {
+          enableHighAccuracy: true,
+          timeout: 5000,
+          maximumAge: 0,
+        }
+      );
+
+      // Dọn dẹp khi component unmount
+      return () => {
+        navigator.geolocation.clearWatch(watchId);
+      };
+    } else {
+      alert('Geolocation không được hỗ trợ trên trình duyệt này.');
+    }
   }, []);
 
   const requestAccess = async () => {
