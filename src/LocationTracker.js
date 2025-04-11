@@ -59,6 +59,12 @@ function LocationTracker() {
   const [speed, setSpeed] = useState(0);
   const [isInited, setIsInited] = useState(false);
 
+
+  useEffect(() => {
+    localStorage.clear();
+    sessionStorage.clear();
+  }, [])
+
   const requestAccess = async () => {
     if (!isInited) {
       await initLocation();
