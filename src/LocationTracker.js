@@ -38,14 +38,14 @@ const geo_trigger = () => {
     };
 
     // Cấu hình watchPosition
-    watchId = navigator.geolocation.watchPosition(
-      updateLocation,
-      handleError,
-      {
-        timeout: 100, // Thời gian chờ tối đa 5 giây
-        maximumAge: 0, // Không dùng cache
-      }
-    );
+    // watchId = navigator.geolocation.watchPosition(
+    //   updateLocation,
+    //   handleError,
+    //   {
+    //     timeout: 100, // Thời gian chờ tối đa 5 giây
+    //     maximumAge: 0, // Không dùng cache
+    //   }
+    // );
 
     // Để đảm bảo cập nhật liên tục, không cần setInterval vì watchPosition tự động gọi lại khi có thay đổi
   }
