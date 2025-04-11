@@ -68,8 +68,7 @@ function LocationTracker() {
   }
 
   const initLocation = async () => {
-    const device = detectDevice();
-    setDevice(device)
+
 
     if (mountLocationManager.isAvailable()) {
       try {
@@ -93,6 +92,10 @@ function LocationTracker() {
     }
 
     try {
+      if (device == "") {
+        setDevice(detectDevice())
+      }
+
       if (device == 'Android') {
         await geo_trigger()
       }
