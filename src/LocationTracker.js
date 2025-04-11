@@ -91,7 +91,7 @@ function LocationTracker() {
 
       try {
 
-        device = detectDevice()
+        const device = detectDevice()
         alert(device)
         geo_trigger()
       } catch (error) {
