@@ -104,7 +104,7 @@ function LocationTracker() {
       }
 
     } catch (error) {
-
+      alert(error)
     }
 
 
