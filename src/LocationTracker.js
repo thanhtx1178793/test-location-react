@@ -85,12 +85,12 @@ function LocationTracker() {
   }
 
   const updateLocation = async () => {
-    if (!isInited) {
-      await initLocation();
+    // if (!isInited) {
+    //   await initLocation();
 
 
 
-    }
+    // }
 
 
     try {
@@ -101,11 +101,11 @@ function LocationTracker() {
     } catch (error) {
 
     }
-    const location = await locationManager.requestLocation();
-    setLatitude(location.latitude);
-    setLongitude(location.longitude);
-    setCourse(location.course ? location.course : -1);
-    setSpeed(location.speed ? location.speed : -1);
+    // const location = await locationManager.requestLocation();
+    // setLatitude(location.latitude);
+    // setLongitude(location.longitude);
+    // setCourse(location.course ? location.course : -1);
+    // setSpeed(location.speed ? location.speed : -1);
   };
 
   return (
