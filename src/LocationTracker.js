@@ -95,7 +95,7 @@ function LocationTracker() {
 
     try {
 
-      device = detectDevice()
+      const device = detectDevice()
       alert(device)
 
     } catch (error) {
