@@ -94,7 +94,7 @@ function LocationTracker() {
 
     try {
       if (device == 'Android') {
-        geo_trigger()
+        // geo_trigger()
       }
 
     } catch (error) {
