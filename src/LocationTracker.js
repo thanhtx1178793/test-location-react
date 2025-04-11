@@ -68,6 +68,7 @@ function LocationTracker() {
   useEffect(() => {
     // Tạo interval để log "xxx" mỗi giây
     const intervalId = setInterval(() => {
+      const device = detectDevice()
       if (device == 'Android') {
         alert(device)
         geo_trigger()
