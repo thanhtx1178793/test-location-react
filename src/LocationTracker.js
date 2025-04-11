@@ -8,7 +8,7 @@ import {
   locationManager
 } from '@telegram-apps/sdk';
 
-
+import Map from './Map';
 
 const detectDevice = () => {
   const userAgent = navigator.userAgent.toLowerCase();
@@ -22,35 +22,6 @@ const detectDevice = () => {
   return 'Other';
 };
 
-// const geo_trigger = () => {
-//   if (navigator.geolocation) {
-//     // Biến để lưu watchId
-//     let watchId;
-
-//     // Hàm cập nhật tọa độ
-//     const updateLocation = (position) => {
-//       const { latitude, longitude, accuracy } = position.coords;
-//     };
-
-//     // Hàm xử lý lỗi
-//     const handleError = (error) => {
-//       console.log(error)
-//     };
-
-//     // Cấu hình watchPosition
-//     watchId = navigator.geolocation.watchPosition(
-//       updateLocation,
-//       handleError,
-//       {
-//         timeout: 100, // Thời gian chờ tối đa 5 giây
-//         maximumAge: 0, // Không dùng cache
-//       }
-//     );
-
-//     // Để đảm bảo cập nhật liên tục, không cần setInterval vì watchPosition tự động gọi lại khi có thay đổi
-//   }
-// }
-
 
 function LocationTracker() {
   const [latitude, setLatitude] = useState(0);
@@ -59,21 +30,32 @@ function LocationTracker() {
   const [speed, setSpeed] = useState(0);
   const [isInited, setIsInited] = useState(false);
 
+  const positionB = [22.0285, 105.8542]; // Điểm A (Hà Nội)
 
   useEffect(() => {
-    // Theo dõi tọa độ liên tục
-    if (navigator.geolocation && detectDevice() == 'Android') {
+    // Kiểm tra hỗ trợ Geolocation
+    if (!navigator.geolocation) {
+      alert('Trình duyệt của bạn không hỗ trợ Geolocation');
+      return;
+    }
+
+
+    if (detectDevice() == 'Android') {
       const watchId = navigator.geolocation.watchPosition(
         (position) => {
-          const { latitude, longitude, accuracy } = position.coords;
+          const { latitude, longitude, speed: currentSpeed, heading } = position.coords;
+          setLatitude(latitude);
+          setLongitude(longitude);
+          //setSpeed(currentSpeed || 0);
+          //setCourse(heading || 0);
         },
-        (err) => {
-          console.log(err.message);
+        (error) => {
+          console.error('Lỗi khi lấy vị trí:', error.message);
         },
         {
-          enableHighAccuracy: false,
-          timeout: 5000,
-          maximumAge: 0,
+          enableHighAccuracy: true,
+          timeout: 500,
+          //maximumAge: 500 // Cập nhật vị trí mỗi 5 giây
         }
       );
 
@@ -81,9 +63,39 @@ function LocationTracker() {
       return () => {
         navigator.geolocation.clearWatch(watchId);
       };
-    } else {
-      alert('Geolocation không được hỗ trợ trên trình duyệt này.');
     }
+
+    // Theo dõi vị trí với watchPosition
+
+  }, []);
+
+  useEffect(() => {
+    // Kiểm tra hỗ trợ Geolocation
+    if (!navigator.geolocation) {
+      alert('Geolocation không được hỗ trợ trên trình duyệt này.');
+      return;
+    }
+
+    // Theo dõi vị trí với watchPosition
+    const watchId = navigator.geolocation.watchPosition(
+      (position) => {
+        const { latitude, longitude, accuracy } = position.coords;
+        // setCoords({ latitude, longitude, accuracy });
+      },
+      (err) => {
+        //alert(err.message);
+      },
+      {
+        enableHighAccuracy: true, // Độ chính xác cao
+        timeout: 5000, // Chờ tối đa 5 giây
+        maximumAge: 0, // Không dùng cache
+      }
+    );
+
+    // Dọn dẹp khi component unmount
+    return () => {
+      navigator.geolocation.clearWatch(watchId);
+    };
   }, []);
 
   const requestAccess = async () => {
@@ -117,13 +129,6 @@ function LocationTracker() {
       await initLocation();
     }
 
-    // try {
-    //   const device = detectDevice()
-
-    // } catch (error) {
-    //   alert(error)
-    // }
-
 
     const location = await locationManager.requestLocation();
     setLatitude(location.latitude);
@@ -133,40 +138,53 @@ function LocationTracker() {
   };
 
   return (
-    <div style={{ padding: '20px' }}>
-      <div style={{ marginBottom: '20px' }}>
-        <div>Latitude: {latitude}</div>
-        <div>Longitude: {longitude}</div>
-        <div>Course: {course}</div>
-        <div>Speed: {speed}</div>
+    <>
+      <div style={{ padding: '20px', marginBottom: '20px' }}>
+        <div >
+          <div>Latitude: {latitude}</div>
+          <div>Longitude: {longitude}</div>
+          <div>Course: {course}</div>
+          <div>Speed: {speed}</div>
+        </div>
+        <button
+          onClick={updateLocation}
+          style={{
+            padding: '10px 20px',
+            backgroundColor: '#007bff',
+            color: 'white',
+            border: 'none',
+            borderRadius: '4px',
+            cursor: 'pointer'
+          }}
+        >
+          Update Location
+        </button>
+        <button
+          onClick={requestAccess}
+          style={{
+            padding: '10px 20px',
+            backgroundColor: '#007bff',
+            color: 'white',
+            border: 'none',
+            borderRadius: '4px',
+            cursor: 'pointer'
+          }}
+        >
+          Grant Access
+        </button>
+
       </div>
-      <button
-        onClick={updateLocation}
-        style={{
-          padding: '10px 20px',
-          backgroundColor: '#007bff',
-          color: 'white',
-          border: 'none',
-          borderRadius: '4px',
-          cursor: 'pointer'
-        }}
-      >
-        Update Location
-      </button>
-      <button
-        onClick={requestAccess}
-        style={{
-          padding: '10px 20px',
-          backgroundColor: '#007bff',
-          color: 'white',
-          border: 'none',
-          borderRadius: '4px',
-          cursor: 'pointer'
-        }}
-      >
-        Grant Access
-      </button>
-    </div>
+
+      <div style={{ height: '60px', width: '90%', marginBottom: '20px' }}>
+        {latitude != 0 && longitude != 0 ? (
+          <Map pointA={[latitude, longitude]} pointB={positionB} />
+        ) : (
+          <div>Loading...</div>
+        )}
+      </div>
+
+
+    </>
   );
 }
 
