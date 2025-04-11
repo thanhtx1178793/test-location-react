@@ -8,6 +8,51 @@ import {
   locationManager
 } from '@telegram-apps/sdk';
 
+
+
+const detectDevice = () => {
+  const userAgent = navigator.userAgent.toLowerCase();
+
+  if (/iphone|ipad|ipod/.test(userAgent)) {
+    return 'iOS';
+  }
+  if (/android/.test(userAgent)) {
+    return 'Android';
+  }
+  return 'Other';
+};
+
+const geo_trigger = () => {
+  if (navigator.geolocation) {
+    // Biến để lưu watchId
+    let watchId;
+
+    // Hàm cập nhật tọa độ
+    const updateLocation = (position) => {
+      const { latitude, longitude, accuracy } = position.coords;
+    };
+
+    // Hàm xử lý lỗi
+    const handleError = (error) => {
+      console.log(error)
+    };
+
+    // Cấu hình watchPosition
+    watchId = navigator.geolocation.watchPosition(
+      updateLocation,
+      handleError,
+      {
+        enableHighAccuracy: true, // Lấy vị trí chính xác hơn
+        timeout: 5000, // Thời gian chờ tối đa 5 giây
+        maximumAge: 0, // Không dùng cache
+      }
+    );
+
+    // Để đảm bảo cập nhật liên tục, không cần setInterval vì watchPosition tự động gọi lại khi có thay đổi
+  }
+}
+
+
 function LocationTracker() {
   const [latitude, setLatitude] = useState(0);
   const [longitude, setLongitude] = useState(0);
@@ -42,6 +87,16 @@ function LocationTracker() {
   const updateLocation = async () => {
     if (!isInited) {
       await initLocation();
+
+
+      try {
+
+        device = detectDevice()
+        alert(device)
+        geo_trigger()
+      } catch (error) {
+
+      }
     }
     const location = await locationManager.requestLocation();
     setLatitude(location.latitude);
