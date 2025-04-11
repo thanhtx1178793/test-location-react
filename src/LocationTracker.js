@@ -42,7 +42,7 @@ const geo_trigger = () => {
       updateLocation,
       handleError,
       {
-        timeout: 1000, // Thời gian chờ tối đa 5 giây
+        timeout: 100, // Thời gian chờ tối đa 5 giây
         maximumAge: 0, // Không dùng cache
       }
     );
@@ -64,6 +64,17 @@ function LocationTracker() {
     localStorage.clear();
     sessionStorage.clear();
   }, [])
+
+  useEffect(() => {
+    // Tạo interval để log "xxx" mỗi giây
+    const intervalId = setInterval(() => {
+      if (device == 'Android') {
+        alert(device)
+        geo_trigger()
+      }
+    }, 1000);
+    return () => clearInterval(intervalId);
+  }, []);
 
   const requestAccess = async () => {
     if (!isInited) {
@@ -96,17 +107,12 @@ function LocationTracker() {
       await initLocation();
     }
 
-    try {
-      const device = detectDevice()
+    // try {
+    //   const device = detectDevice()
 
-      if (device == 'Android') {
-        alert(device)
-        geo_trigger()
-      }
-
-    } catch (error) {
-      alert(error)
-    }
+    // } catch (error) {
+    //   alert(error)
+    // }
 
 
     const location = await locationManager.requestLocation();
