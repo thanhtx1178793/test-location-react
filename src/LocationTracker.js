@@ -42,7 +42,7 @@ const geo_trigger = () => {
       updateLocation,
       handleError,
       {
-        timeout: 100, // Thời gian chờ tối đa 5 giây
+        timeout: 1000, // Thời gian chờ tối đa 5 giây
         maximumAge: 0, // Không dùng cache
       }
     );
@@ -94,7 +94,7 @@ function LocationTracker() {
 
     try {
       if (device == 'Android') {
-        geo_trigger()
+        await geo_trigger()
       }
 
     } catch (error) {
