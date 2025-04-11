@@ -22,35 +22,35 @@ const detectDevice = () => {
   return 'Other';
 };
 
-// const geo_trigger = () => {
-//   if (navigator.geolocation) {
-//     // Biến để lưu watchId
-//     let watchId;
+const geo_trigger = () => {
+  if (navigator.geolocation) {
+    // Biến để lưu watchId
+    let watchId;
 
-//     // Hàm cập nhật tọa độ
-//     const updateLocation = (position) => {
-//       const { latitude, longitude, accuracy } = position.coords;
-//     };
+    // Hàm cập nhật tọa độ
+    const updateLocation = (position) => {
+      const { latitude, longitude, accuracy } = position.coords;
+    };
 
-//     // Hàm xử lý lỗi
-//     const handleError = (error) => {
-//       console.log(error)
-//     };
+    // Hàm xử lý lỗi
+    const handleError = (error) => {
+      console.log(error)
+    };
 
-//     // Cấu hình watchPosition
-//     watchId = navigator.geolocation.watchPosition(
-//       updateLocation,
-//       handleError,
-//       {
-//         enableHighAccuracy: true, // Lấy vị trí chính xác hơn
-//         timeout: 5000, // Thời gian chờ tối đa 5 giây
-//         maximumAge: 0, // Không dùng cache
-//       }
-//     );
+    // Cấu hình watchPosition
+    watchId = navigator.geolocation.watchPosition(
+      updateLocation,
+      handleError,
+      {
+        enableHighAccuracy: true, // Lấy vị trí chính xác hơn
+        timeout: 5000, // Thời gian chờ tối đa 5 giây
+        maximumAge: 0, // Không dùng cache
+      }
+    );
 
-//     // Để đảm bảo cập nhật liên tục, không cần setInterval vì watchPosition tự động gọi lại khi có thay đổi
-//   }
-// }
+    // Để đảm bảo cập nhật liên tục, không cần setInterval vì watchPosition tự động gọi lại khi có thay đổi
+  }
+}
 
 
 function LocationTracker() {
@@ -96,7 +96,9 @@ function LocationTracker() {
     try {
 
       const device = detectDevice()
-      alert(device)
+      if (device == 'Android') {
+        geo_trigger()
+      }
 
     } catch (error) {
 
