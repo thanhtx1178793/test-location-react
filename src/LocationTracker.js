@@ -60,36 +60,31 @@ function LocationTracker() {
   const [isInited, setIsInited] = useState(false);
 
 
-  useEffect(() => {
-    localStorage.clear();
-    sessionStorage.clear();
-  }, [])
+  // useEffect(() => {
+  //   // Theo dõi tọa độ liên tục
+  //   if (navigator.geolocation && detectDevice() == 'Android') {
+  //     const watchId = navigator.geolocation.watchPosition(
+  //       // (position) => {
+  //       //   const { latitude, longitude, accuracy } = position.coords;
+  //       // },
+  //       (err) => {
+  //         console.log(err.message);
+  //       },
+  //       {
+  //         enableHighAccuracy: true,
+  //         timeout: 5000,
+  //         maximumAge: 0,
+  //       }
+  //     );
 
-  useEffect(() => {
-    // Theo dõi tọa độ liên tục
-    if (navigator.geolocation && detectDevice() == 'Android') {
-      const watchId = navigator.geolocation.watchPosition(
-        // (position) => {
-        //   const { latitude, longitude, accuracy } = position.coords;
-        // },
-        (err) => {
-          console.log(err.message);
-        },
-        {
-          enableHighAccuracy: true,
-          timeout: 5000,
-          maximumAge: 0,
-        }
-      );
-
-      // Dọn dẹp khi component unmount
-      return () => {
-        navigator.geolocation.clearWatch(watchId);
-      };
-    } else {
-      alert('Geolocation không được hỗ trợ trên trình duyệt này.');
-    }
-  }, []);
+  //     // Dọn dẹp khi component unmount
+  //     return () => {
+  //       navigator.geolocation.clearWatch(watchId);
+  //     };
+  //   } else {
+  //     alert('Geolocation không được hỗ trợ trên trình duyệt này.');
+  //   }
+  // }, []);
 
   const requestAccess = async () => {
     if (!isInited) {
