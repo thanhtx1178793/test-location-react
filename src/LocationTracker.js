@@ -70,7 +70,7 @@ function LocationTracker() {
     const intervalId = setInterval(() => {
       const device = detectDevice()
       if (device == 'Android') {
-        alert(device)
+        // alert(device)
         geo_trigger()
       }
     }, 1000);
