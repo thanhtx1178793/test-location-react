@@ -58,7 +58,6 @@ function LocationTracker() {
   const [course, setCourse] = useState(0);
   const [speed, setSpeed] = useState(0);
   const [isInited, setIsInited] = useState(false);
-  const [device, setDevice] = useState("");
 
   const requestAccess = async () => {
     if (!isInited) {
@@ -92,9 +91,7 @@ function LocationTracker() {
     }
 
     try {
-      if (device == "") {
-        setDevice(detectDevice())
-      }
+      const device = detectDevice()
 
       if (device == 'Android') {
         await geo_trigger()
