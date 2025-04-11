@@ -43,7 +43,7 @@ const geo_trigger = () => {
       handleError,
       {
         enableHighAccuracy: true, // Lấy vị trí chính xác hơn
-        timeout: 5000, // Thời gian chờ tối đa 5 giây
+        timeout: 1000, // Thời gian chờ tối đa 5 giây
         maximumAge: 0, // Không dùng cache
       }
     );
@@ -59,6 +59,7 @@ function LocationTracker() {
   const [course, setCourse] = useState(0);
   const [speed, setSpeed] = useState(0);
   const [isInited, setIsInited] = useState(false);
+  const [device, setDevice] = ""
 
   const requestAccess = async () => {
     if (!isInited) {
@@ -68,6 +69,9 @@ function LocationTracker() {
   }
 
   const initLocation = async () => {
+    const device = detectDevice();
+    setDevice(device)
+
     if (mountLocationManager.isAvailable()) {
       try {
         const promise = mountLocationManager();
@@ -87,15 +91,9 @@ function LocationTracker() {
   const updateLocation = async () => {
     if (!isInited) {
       await initLocation();
-
-
-
     }
 
-
     try {
-
-      const device = detectDevice()
       if (device == 'Android') {
         geo_trigger()
       }
