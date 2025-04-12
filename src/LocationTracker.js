@@ -45,8 +45,8 @@ function LocationTracker() {
       const watchId = navigator.geolocation.watchPosition(
         (position) => {
           const { latitude, longitude, speed: currentSpeed, heading } = position.coords;
-          setLatitude(latitude);
-          setLongitude(longitude);
+          // setLatitude(latitude);
+          // setLongitude(longitude);
           //setSpeed(currentSpeed || 0);
           //setCourse(heading || 0);
         },
