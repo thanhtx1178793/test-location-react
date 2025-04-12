@@ -9,6 +9,7 @@ import {
 } from '@telegram-apps/sdk';
 
 import Map from './Map';
+import MapComponent from './Map2';
 
 const detectDevice = () => {
   const userAgent = navigator.userAgent.toLowerCase();
@@ -182,7 +183,14 @@ function LocationTracker() {
           <div>Loading...</div>
         )}
       </div>
-
+      {/* 
+      <div style={{ height: '60px', width: '90%', marginBottom: '20px' }}>
+        {latitude != 0 && longitude != 0 ? (
+          <MapComponent pointA={[latitude, longitude]} pointB={positionB} />
+        ) : (
+          <div>Loading...</div>
+        )}
+      </div> */}
 
     </>
   );

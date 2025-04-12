@@ -43,9 +43,9 @@ const Map = ({ pointA, pointB }) => {
             // if (map && routingControlRef.current) {
             //     map.removeControl(routingControlRef.current);
             // }
-            // if (map && polylineRef.current) {
-            //     map.removeLayer(polylineRef.current);
-            // }
+            if (map && polylineRef.current) {
+                map.removeLayer(polylineRef.current);
+            }
         };
     }, [pointA, pointB]);
 
