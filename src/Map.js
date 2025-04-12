@@ -29,7 +29,12 @@ const Map = ({ pointA, pointB }) => {
             createMarker: function (i, waypoint, n) {
                 return L.marker(waypoint.latLng)
                     .bindPopup(i === 0 ? 'Điểm xuất phát' : 'Điểm đến');
-            }
+            },
+            show: false, // Ẩn phần chỉ dẫn
+            addWaypoints: false,
+            routeWhileDragging: false,
+            showAlternatives: false,
+            fitSelectedRoutes: true,
         }).addTo(map);
 
         map.fitBounds([pointA, pointB]);
