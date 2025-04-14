@@ -123,7 +123,7 @@ const Map3 = ({ pointA, pointB }) => {
         >
             <TileLayer
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                attribution='&copy; <a href="">Move to earn</a> contributors'
+                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors | <a href="">Move to earn</a>'
             />
             <MapContent pointA={pointA} pointB={pointB} />
         </MapContainer>

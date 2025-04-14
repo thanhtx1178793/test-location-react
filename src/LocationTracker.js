@@ -11,6 +11,7 @@ import {
 import Map from './Map';
 import MapComponent from './Map2';
 import Map3 from './Map3';
+import Map4 from './Map4';
 
 const detectDevice = () => {
   const userAgent = navigator.userAgent.toLowerCase();
@@ -177,9 +178,18 @@ function LocationTracker() {
 
       </div>
 
-      <div style={{ height: '60px', width: '90%', marginBottom: '20px' }}>
+      {/* <div style={{ height: '60px', width: '90%', marginBottom: '20px' }}>
         {latitude != 0 && longitude != 0 ? (
           <Map3 pointA={[latitude, longitude]} pointB={positionB} />
+        ) : (
+          <div>Loading...</div>
+        )}
+      </div> */}
+
+
+      <div style={{ height: '60px', width: '90%', marginBottom: '20px' }}>
+        {latitude != 0 && longitude != 0 ? (
+          <Map4 pointA={[latitude, longitude]} pointB={positionB} />
         ) : (
           <div>Loading...</div>
         )}
