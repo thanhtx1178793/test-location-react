@@ -10,6 +10,7 @@ import {
 
 import Map from './Map';
 import MapComponent from './Map2';
+import Map3 from './Map3';
 
 const detectDevice = () => {
   const userAgent = navigator.userAgent.toLowerCase();
@@ -31,7 +32,7 @@ function LocationTracker() {
   const [speed, setSpeed] = useState(0);
   const [isInited, setIsInited] = useState(false);
 
-  const positionB = [22.0285, 105.8542]; // Điểm A (Hà Nội)
+  const positionB = [21.0276, 105.7909]; // Điểm A (Hà Nội)
 
   useEffect(() => {
     // Kiểm tra hỗ trợ Geolocation
@@ -178,7 +179,7 @@ function LocationTracker() {
 
       <div style={{ height: '60px', width: '90%', marginBottom: '20px' }}>
         {latitude != 0 && longitude != 0 ? (
-          <Map pointA={[latitude, longitude]} pointB={positionB} />
+          <Map3 pointA={[latitude, longitude]} pointB={positionB} />
         ) : (
           <div>Loading...</div>
         )}

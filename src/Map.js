@@ -9,7 +9,17 @@ import { useMap } from 'react-leaflet/hooks'
 const Map = ({ pointA, pointB }) => {
     const mapRef = React.useRef();
     const routingControlRef = React.useRef();
-    const polylineRef = React.useRef();
+    const markerRefs = React.useRef([]);
+
+    // Tạo icon tùy chỉnh
+    const createCustomIcon = (iconUrl) => {
+        return L.icon({
+            iconUrl: iconUrl,
+            iconSize: [32, 32], // Kích thước icon
+            iconAnchor: [16, 32], // Điểm neo của icon (phần dưới cùng)
+            popupAnchor: [0, -32] // Vị trí popup so với icon
+        });
+    };
 
     React.useEffect(() => {
         if (!mapRef.current) return;
@@ -27,8 +37,17 @@ const Map = ({ pointA, pointB }) => {
                 styles: [{ color: 'blue', weight: 4 }]
             },
             createMarker: function (i, waypoint, n) {
-                return L.marker(waypoint.latLng)
-                    .bindPopup(i === 0 ? 'Điểm xuất phát' : 'Điểm đến');
+                // Sử dụng icon tùy chỉnh cho marker
+                const iconUrl = i === 0
+                    ? 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png' // Icon cho điểm xuất phát
+                    : 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png'; // Icon cho điểm đến
+
+                const marker = L.marker(waypoint.latLng, {
+                    icon: createCustomIcon(iconUrl)
+                }).bindPopup(i === 0 ? 'Điểm xuất phát' : 'Điểm đến');
+
+                markerRefs.current.push(marker);
+                return marker;
             },
             show: false, // Ẩn phần chỉ dẫn
             addWaypoints: false,
@@ -40,11 +59,17 @@ const Map = ({ pointA, pointB }) => {
         map.fitBounds([pointA, pointB]);
 
         return () => {
-            // if (map && routingControlRef.current) {
-            //     map.removeControl(routingControlRef.current);
-            // }
-            if (map && polylineRef.current) {
-                map.removeLayer(polylineRef.current);
+            // Xóa tất cả marker
+            markerRefs.current.forEach(marker => {
+                if (map && marker) {
+                    map.removeLayer(marker);
+                }
+            });
+            markerRefs.current = [];
+
+            // Xóa routing control
+            if (map && routingControlRef.current) {
+                map.removeControl(routingControlRef.current);
             }
         };
     }, [pointA, pointB]);
