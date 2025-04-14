@@ -8,15 +8,57 @@ import { useMap } from 'react-leaflet/hooks'
 const MapContent = ({ pointA, pointB }) => {
     const map = useMap();
     const markerRefs = React.useRef([]);
+    const radarLineRef = React.useRef(null);
+    const angleRef = React.useRef(0);
+    const animationFrameRef = React.useRef(null);
+    const lastTimeRef = React.useRef(0);
 
     // Tạo icon tùy chỉnh
     const createCustomIcon = (iconUrl) => {
         return L.icon({
             iconUrl: iconUrl,
-            iconSize: [32, 32],
-            iconAnchor: [16, 32],
+            iconSize: [16, 16],
+            iconAnchor: [16, 16],
             popupAnchor: [0, -32]
         });
+    };
+
+    // Hàm tính toán điểm cuối của thanh quét
+    const calculateEndPoint = (center, radius, angle) => {
+        const rad = angle * Math.PI / 180;
+        const lat = center[0] + (radius / 111320) * Math.cos(rad);
+        const lng = center[1] + (radius / (111320 * Math.cos(center[0] * Math.PI / 180))) * Math.sin(rad);
+        return [lat, lng];
+    };
+
+    // Hàm tạo thanh quét radar
+    const createRadarLine = (center, radius, angle) => {
+        const endPoint = calculateEndPoint(center, radius, angle);
+        return L.polyline([center, endPoint], {
+            color: 'red',
+            weight: 1,
+            opacity: 0.8
+        });
+    };
+
+    // Hàm animation radar
+    const animateRadar = (timestamp) => {
+        if (!lastTimeRef.current) {
+            lastTimeRef.current = timestamp;
+        }
+
+        const deltaTime = timestamp - lastTimeRef.current;
+        if (deltaTime >= 16) { // ~60fps
+            angleRef.current = (angleRef.current + 1) % 360;
+            if (radarLineRef.current) {
+                map.removeLayer(radarLineRef.current);
+            }
+            radarLineRef.current = createRadarLine(pointB, 500, angleRef.current);
+            radarLineRef.current.addTo(map);
+            lastTimeRef.current = timestamp;
+        }
+
+        animationFrameRef.current = requestAnimationFrame(animateRadar);
     };
 
     React.useEffect(() => {
@@ -34,11 +76,32 @@ const MapContent = ({ pointA, pointB }) => {
         markerB.addTo(map);
         markerRefs.current.push(markerB);
 
-        // Fit bounds để hiển thị cả 2 điểm
-        map.fitBounds([pointA, pointB]);
+        // Vẽ vòng tròn quét xung quanh điểm B với bán kính 500m
+        const circle = L.circle(pointB, {
+            color: 'red',
+            fillColor: '#f03',
+            fillOpacity: 0.2,
+            radius: 500, // 500m
+            weight: 1 // Giảm độ dày viền
+        }).addTo(map);
+        markerRefs.current.push(circle);
+
+        // Bắt đầu animation radar
+        animationFrameRef.current = requestAnimationFrame(animateRadar);
+
+        // Fit bounds để hiển thị cả 2 điểm và vòng tròn
+        const bounds = L.latLngBounds([pointA, pointB]);
+        bounds.extend(circle.getBounds());
+        map.fitBounds(bounds);
 
         return () => {
-            // Xóa tất cả marker
+            // Dừng animation và xóa tất cả marker, vòng tròn và thanh quét
+            if (animationFrameRef.current) {
+                cancelAnimationFrame(animationFrameRef.current);
+            }
+            if (radarLineRef.current) {
+                map.removeLayer(radarLineRef.current);
+            }
             markerRefs.current.forEach(marker => {
                 if (map && marker) {
                     map.removeLayer(marker);
